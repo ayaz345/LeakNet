@@ -21,9 +21,9 @@ def WildcardSearch( wildcard, bRecurse=0 ):
 		dirName = "."
 		dosStyleWildcard = wildcard
 	else:
-		dirName = wildcard[0:iLast]
+		dirName = wildcard[:iLast]
 		dosStyleWildcard = wildcard[iLast+1:]
-		
+
 	# Now generate a regular expression for the search.
 	# DOS     -> RE
 	# *       -> .*
@@ -39,7 +39,7 @@ def __GetFiles_R( matcher, dirName, bRecurse ):
 	# For each file, see if we can find the regular expression.
 	files = os.listdir( dirName )
 	for baseName in files:
-		filename = dirName + "/" + baseName
+		filename = f"{dirName}/{baseName}"
 
 		mode = os.stat( filename )[stat.ST_MODE]
 		if stat.S_ISREG( mode ):

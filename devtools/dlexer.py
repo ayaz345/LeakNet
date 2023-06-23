@@ -75,9 +75,8 @@ class DLexer:
 
 
 	def BeginReadFile( self, fileName ):
-		file = open( fileName, 'r' )
-		self.BeginRead( file.read() )
-		file.close()
+		with open( fileName, 'r' ) as file:
+			self.BeginRead( file.read() )
 
 	
 	def GetToken( self ):
@@ -116,25 +115,24 @@ class DLexer:
 
 
 	def GetLineContents( self ):
-		m = self.__notnewline.match( self.__curString, self.__currentCharacter )
-		if m:
+		if m := self.__notnewline.match(self.__curString, self.__currentCharacter):
 			return self.__curString[ m.start() : m.end() ]
 		else:
 			return ""
 
 
 	def __SkipWhitespace( self ):
-		if self.__bSkipWhitespace:
-			while 1:
-				a = self.__whitespace.match( self.__curString, self.__currentCharacter )
-				b = self.__newline.match( self.__curString, self.__currentCharacter )
-				if a:
-					self.__currentCharacter = a.end()
-					continue
-				elif b:
-					self.__currentCharacter = b.end()
-					self.__lineNumber += 1
-					continue
-				else:
-					break
+		if not self.__bSkipWhitespace:
+			return
+		while 1:
+			a = self.__whitespace.match( self.__curString, self.__currentCharacter )
+			b = self.__newline.match( self.__curString, self.__currentCharacter )
+			if a:
+				self.__currentCharacter = a.end()
+			elif b:
+				self.__currentCharacter = b.end()
+				self.__lineNumber += 1
+				continue
+			else:
+				break
 
